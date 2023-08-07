@@ -1,1 +1,1 @@
-This readme describes the system engineering repository root
+This is the root of system engineering
