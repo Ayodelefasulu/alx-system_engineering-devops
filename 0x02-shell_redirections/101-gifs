@@ -1,0 +1,2 @@
+#!/bin/bash
+find . -type f -name "*.gif" -printf "%f\n" | awk -F. '{ print tolower($1) }' | sort
