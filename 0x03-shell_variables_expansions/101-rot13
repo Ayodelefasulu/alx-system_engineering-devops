@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "your_text_here" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
