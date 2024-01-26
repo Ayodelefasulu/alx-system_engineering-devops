@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# This script displays the content of the current directory in a list format
+# Only the part of the name after the first dash is displayed
+
+for file in *; do
+  # Check if the file is not hidden and is a regular file
+  if [[ ! $file =~ ^\.[^\.] ]] && [ -f "$file" ]; then
+    # Extract the part of the name after the first dash
+    display_name=$(echo "$file" | sed 's/^[^-]*-//')
+    echo "$display_name"
+  fi
+done
