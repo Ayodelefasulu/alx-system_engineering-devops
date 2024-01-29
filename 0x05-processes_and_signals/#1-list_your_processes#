@@ -4,4 +4,4 @@
 # -x: Show processes without controlling TTY
 # -u: User-oriented format
 # --forest: show process hierachy
-ps aux --forest 
+ps aux --forest
