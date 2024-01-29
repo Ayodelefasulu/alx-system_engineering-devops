@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-
 # Display a list of currently running processes
 # -a: Show processes for all users
 # -x: Show processes without controlling TTY
 # -u: User-oriented format
-ps aux
+# --forest: show process hierachy
+ps aux --forest
