@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
-# This program shows a pid, along with the process name, of process whose name contain the word "bash"
+# This program shows a pid, along with the process name,
+#+ of process whose name contain the word "bash"
 
-ps aux --no-heading | grep bash | grep -v grep | awk '{print $2, $11}'
+# ps aux --no-heading | grep bash | grep -v grep | awk '{print $2, $11}'
+
+#!/bin/bash
+
+# Find PIDs of processes whose name contains the word "bash"
+bash_pids=$(pgrep -f bash)
+
+# Get the PID of the current script
+script_pid=$$
+
+# Display the PIDs along with the process name
+for pid in $bash_pids; do
+    echo "$pid bash"
+done
+
+# Display the PID of the script itself
+echo "$script_pid $0"
