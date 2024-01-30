@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# To stop process id with a specific name
+
+processid=""

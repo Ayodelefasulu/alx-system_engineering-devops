@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# To stop process id with a specific name
+
+processid="$(pgrep -f 4-to_infinity_and_beyond)"
+kill "$processid"
