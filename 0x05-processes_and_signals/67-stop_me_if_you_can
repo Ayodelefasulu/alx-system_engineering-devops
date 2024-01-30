@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# To stop a process without using kill
+# Specify the process name
+process_name="7-highlander"
+
+# Use pkill to send the SIGTERM signal to the process
+pkill -SIGTERM -f "$process_name"
+
+# Optionally, wait for the process to finish
+wait
