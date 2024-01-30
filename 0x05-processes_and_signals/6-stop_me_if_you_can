@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
 # To stop a process without using kill
+# ./4-to_infinity_and_beyond
 
 # Find the PGID of the 4-to_infinity_and_beyond process
-pgid=$(ps -o pgid= $(pgrep -f "4-to_infinity_and_beyond"))
+pgid=$(pgrep -f "4-to_infinity_and_beyond")
 
-# Check if the process exists
-if [ -n "$pgid" ]; then
-    echo "Stopping 4-to_infinity_and_beyond process with PGID $pgid"
-    # Send a termination signal to the process group
-    kill -- -$pgid
-else
-    echo "Process 4-to_infinity_and_beyond not found."
-fi
+kill -s SIGINT -- "$pgid"
