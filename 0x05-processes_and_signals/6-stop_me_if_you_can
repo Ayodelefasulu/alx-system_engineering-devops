@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # To stop a process without using kill
-# ./4-to_infinity_and_beyond
+# Specify the process name
+process_name="4-to_infinity_and_beyond"
 
-# Find the PGID of the 4-to_infinity_and_beyond process
-pgid=$(pgrep -f "4-to_infinity_and_beyond")
+# Use pkill to send the SIGTERM signal to the process
+pkill -TERM -f "$process_name"
 
-kill -s SIGINT -- "$pgid"
+# Optionally, wait for the process to finish
+wait
