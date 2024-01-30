@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Specify the process name
+process_name="7-highlander"
+
+# Use pkill to send the SIGKILL signal to the process
+pkill -KILL -f "$process_name"
+echo "killed"
