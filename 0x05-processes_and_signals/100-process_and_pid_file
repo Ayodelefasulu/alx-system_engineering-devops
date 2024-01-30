@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# Define the PID file path
+pid_file="/var/run/myscript.pid"
+
+# Function to handle SIGTERM and SIGQUIT signals
+terminate_handler() {
+    echo "I hate the kill command"
+    cleanup_and_exit
+}
+
+# Function to handle SIGINT signal
+interrupt_handler() {
+    echo "Y U no love me?!"
+}
+
+# Function to cleanup and exit
+cleanup_and_exit() {
+    rm -f "$pid_file"  # Delete the PID file
+    exit 0
+}
+
+# Register signal handlers
+trap 'terminate_handler' SIGTERM SIGQUIT
+trap 'interrupt_handler' SIGINT
+
+# Write the script's PID to the PID file
+echo $$ > "$pid_file"
+
+# Display "To infinity and beyond" indefinitely
+while true; do
+    echo "To infinity and beyond"
+    sleep 2
+done
+
