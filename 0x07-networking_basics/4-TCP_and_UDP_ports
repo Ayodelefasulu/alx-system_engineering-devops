@@ -3,7 +3,6 @@
 
 echo "Active Internet connections (only servers)"
 echo "Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name"
-
 # Use netstat to get listening sockets
 netstat -ltnp | awk 'NR > 2 {print $1, $4, $7}' | while read -r proto local_address pid_program; do
     # Extract PID and program name
