@@ -1,1 +1,5 @@
+#!/usr/bin/env bash
+# Displays all sockets active on the network
+
 netstat -an -p tcp
+#netstat -lx

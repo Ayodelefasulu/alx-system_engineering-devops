@@ -10,7 +10,7 @@ ip_address=$1
 echo "PING $ip_address ($ip_address) 56(84) bytes of data."
 
 # Ping the IP address 5 times
-ping_result=$(ping -c 5 $ip_address)
+ping_result=$(ping -c 5 "$ip_address")
 
 # Display ping result
 echo "$ping_result"
