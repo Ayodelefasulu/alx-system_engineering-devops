@@ -1,30 +1,14 @@
 #!/usr/bin/env bash
 
+# Check if an IP address is provided as an argument
 if [ $# -eq 0 ]; then
     echo "Usage: $0 {IP_ADDRESS}"
     exit 1
 fi
 
+# Extract the IP address from the command line argument
 ip_address=$1
 
-echo "PING $ip_address ($ip_address) 56(84) bytes of data."
-
-# Ping the IP address 5 times
-ping_result=$(ping -c 5 "$ip_address")
-
-# Display ping result
-echo "$ping_result"
-
-# Extract statistics using grep and awk
-packet_loss=$(echo "$ping_result" | grep -oP "\d+% packet loss")
-time_stats=$(echo "$ping_result" | grep -oP "time \K[^ ]+" | awk '{sum+=$1} END {print "rtt min/avg/max/mdev = " sum/NR " ms"}')
-
-# Display statistics based on the result
-if [[ $packet_loss == "0% packet loss" ]]; then
-    echo -e "\n--- $ip_address ping statistics ---"
-    echo "5 packets transmitted, 5 received, $packet_loss, $time_stats"
-else
-    echo -e "\n--- $ip_address ping statistics ---"
-    echo "5 packets transmitted, 0 received, 100% packet loss"
-fi
+# Ping the specified IP address 5 times
+ping -c 5 $ip_address
 
