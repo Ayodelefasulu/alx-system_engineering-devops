@@ -2,4 +2,4 @@
 # display all ip addresses
 
 # Use ifconfig to get active IPv4 addresses
-ifconfig | grep -oP '(?<=inet )([0-9.]+)' | grep -v '127.0.0.1'
+ifconfig | grep 'inet ' | awk '{print $2}' | cut -d ':' -f 2
