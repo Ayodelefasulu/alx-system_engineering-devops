@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# display all ip addresses
+
+# Use ifconfig to get active IPv4 addresses
+ifconfig | grep -oP '(?<=inet )([0-9.]+)' | grep -v '127.0.0.1'
