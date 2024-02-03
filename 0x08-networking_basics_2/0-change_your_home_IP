@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Changes the IP address
+
+# Backup /etc/hosts file
+sudo cp /etc/hosts /etc/hosts.bak
+
+# Modify /etc/hosts file using awk
+sudo awk '{gsub(/127.0.0.1(.*)localhost/, "127.0.0.2\\1localhost"); gsub(/facebook.com/, "8.8.8.8 facebook.com")}1' /etc/hosts > /tmp/hosts_temp
+sudo mv /tmp/hosts_temp /etc/hosts
+
+# Output success message
+echo "Host configurations updated successfully."
+
+# Show updated /etc/hosts file
+echo "Updated /etc/hosts file:"
+cat /etc/hosts
