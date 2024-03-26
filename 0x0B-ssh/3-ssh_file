@@ -4,7 +4,7 @@
 # Define variables
 private_key="~/.ssh/3-ssh"
 username="ubuntu"
-server_ip="54.159.1.148"
+server_ip="107.22.142.174"
 
 # Use ssh with single-character flags to connect
 ssh -i "$private_key" "$username"@"$server_ip"
