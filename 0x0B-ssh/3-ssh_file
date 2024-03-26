@@ -2,7 +2,7 @@
 # Connecting this public key to  server
 
 # Define variables
-private_key="~/.ssh/3-ssh"
+private_key="~/root/.ssh/authorized_keys"
 username="ubuntu"
 server_ip="107.22.142.174"
 
