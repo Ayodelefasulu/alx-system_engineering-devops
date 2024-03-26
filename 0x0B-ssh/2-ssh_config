@@ -1,10 +1,1 @@
-#!/usr/bin/env bash
-# ~/.ssh/config
-# This file is used to configure the ssh without password
-
-Host ubuntu@54.159.1.148  # Use any alias you prefer for your server
-    HostName 98.98.98.98  # Replace with your server's IP or hostname
-    User ubuntu  # Replace 'ubuntu' with your username on the server
-    IdentityFile ~/.ssh/school  # Path to your private key
-    PasswordAuthentication no  # Refuse password authentication
-
+/root/.ssh/config
