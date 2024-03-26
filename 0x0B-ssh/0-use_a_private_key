@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Define variables
+private_key="~/.ssh/school"
+username="ubuntu"
+server_ip="54.159.1.148"
+
+# Use ssh with single-character flags to connect
+ssh -i "$private_key" "$username"@"$server_ip"
