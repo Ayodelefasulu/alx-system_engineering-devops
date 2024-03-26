@@ -1,1 +1,4 @@
-/root/.ssh/config
+#!/usr/bin/env bash
+# It's meant to create a ssh connection without password
+IdentityFile ~/.ssh/school
+PasswordAuthentication no
