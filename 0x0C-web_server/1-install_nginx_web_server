@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 
-# Update package lists and install nginx
+# Install Nginx
 apt-get update
 apt-get install -y nginx
 
-# Configure nginx to listen on port 80 and serve "Hello World!" page
-echo "server {
-    listen 80;
-    server_name _;
+# Configure Nginx to listen on port 80 and return "Hello World!"
+echo '
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
     root /var/www/html;
     index index.html;
 
-    location / {
-        echo 'Hello World!';
-    }
-}" > /etc/nginx/sites-available/default
+    server_name _;
 
-# Restart nginx without using systemctl
+    location / {
+        echo "Hello World!";
+    }
+}' > /etc/nginx/sites-available/default
+
+# Restart Nginx without using systemctl
 kill -s HUP $(pidof nginx)
 
 # Output success message
