@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Connecting this public key to  server
 
 # Define variables
 private_key="~/.ssh/3-ssh"
