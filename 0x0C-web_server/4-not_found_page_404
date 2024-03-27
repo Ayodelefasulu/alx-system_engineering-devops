@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# Create the custom 404 error page
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+# Set permissions on the error page
+chmod 644 /var/www/html/404.html
+
+# Configure error_page directive in Nginx
+sed -i 's/error_page.*/error_page 404 \/404.html;/' /etc/nginx/sites-available/web-01.conf
+
+# Reload Nginx configuration (without systemctl)
+killall -s HUP nginx
+
+# Test the custom 404 page with an invalid URL
+curl localhost/non-existent-page
+
+# Check for "Ceci n'est pas une page" in the response
+if grep -q 'Ceci n\'est pas une page' output.txt; then
+  echo "Success! Custom 404 page is working. Response contains 'Ceci n'est pas une page'."
+  rm output.txt  # Clean up temporary file (optional)
+else
+  echo "Error! Custom 404 page content not found in response."
+  cat output.txt  # Display response for debugging (optional)
+fi
+
+# Clean up temporary file (optional)
+rm output.txt
+
