@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Script to configure Nginx redirection
+
+# Define the redirection configuration
+echo '
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    server_name _;
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    # Other server configurations if needed
+}' > /etc/nginx/sites-available/redirect
+
+# Create a symbolic link to enable the site
+ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
+
+# Restart Nginx to apply the changes
+service nginx restart
+
+# Output success message
+echo "Nginx redirection configured successfully."
