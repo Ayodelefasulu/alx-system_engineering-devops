@@ -1,26 +1,33 @@
 #!/usr/bin/env bash
-# Script to configure Nginx redirection
 
-# Define the redirection configuration
-echo '
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+# Locate the block section for the redirect rule
+location_block=$(grep -n '^\s*location \/ {' /etc/nginx/sites-available/web-01.conf | cut -d: -f1)
 
-    server_name _;
+# Check if the location block was found
+if [[ -z "$location_block" ]]; then
+  echo "Error: Could not find the location block in /etc/nginx/sites-available/web-01.conf"
+  exit 1
+fi
 
-    location /redirect_me {
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-    }
+# Insert the redirect rule within the existing location block
+sed -i "${location_block}i\\
+\
+    # Redirect /redirect_me to https://www.youtube.com/watch?v=QH2-TGUlwu4 with 301 status\
+    rewrite ^/redirect_me/(.*)$ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/web-01.conf
 
-    # Other server configurations if needed
-}' > /etc/nginx/sites-available/redirect
+# Reload Nginx configuration (without systemctl)
+killall -s HUP nginx
 
-# Create a symbolic link to enable the site
-ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
+# Test the redirection
+curl -sI localhost/redirect_me/
 
-# Restart Nginx to apply the changes
-service nginx restart
+# Check the response code (should be 301)
+if [ $? -eq 0 ]; then
+  echo "Redirection successful! Nginx is now redirecting /redirect_me to the specified URL."
+else
+  echo "Error! Redirection is not working as expected."
 
-# Output success message
-echo "Nginx redirection configured successfully."
+  # Check Nginx configuration for the redirect rule
+  grep 'rewrite ^/redirect_me/' /etc/nginx/sites-available/web-01.conf
+  echo "**Please review the inserted redirect rule above (if present)**"
+fi
