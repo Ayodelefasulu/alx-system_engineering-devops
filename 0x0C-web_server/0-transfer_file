@@ -8,10 +8,10 @@ if [ $# -lt 4 ]; then
 fi
 
 # Assigning parameters to variables
-path_to_file=some_page.html
-ip=107.22.142.174
-username=ubuntu
-path_to_ssh_key=~/root/.ssh.school
+path_to_file=$1
+ip=$2
+username=$3
+path_to_ssh_key=$4
 
 # Transfer file using scp with strict host key checking disabled
 scp -o StrictHostKeyChecking=no -i "$path_to_ssh_key" "$path_to_file" "$username@$ip":~
