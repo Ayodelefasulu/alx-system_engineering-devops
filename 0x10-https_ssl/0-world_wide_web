@@ -1,32 +1,33 @@
 #!/usr/bin/env bash
 # This script configures my domain zone so that the subdomian "www" points to my load balancer
-# Function to audit a subdomain
-audit_subdomain() {
-    domain=$1
-    subdomain=$2
 
-    if [ -z "$subdomain" ]; then
-        subdomains=("www" "lb-01" "web-01" "web-02")
-    else
-        subdomains=("$subdomain")
-    fi
+domain="$1"
+subdomain="$2"
 
-    for sub in "${subdomains[@]}"; do
-        record=$(dig +short $sub.$domain)
-        record_type=$(dig +short $sub.$domain | awk '{print $4}')
+# Function to display subdomain information
+get_subdomain_info() {
+    local sub="$1"
+    local record_type
+    local destination
 
-        echo "The subdomain $sub is a $record_type record and points to $record"
-    done
+    # Perform DNS lookup
+    result=$(dig "$sub.$domain" | awk '/ANSWER SECTION:/ { getline; print $4, $5 }')
+
+    # Extract record type and destination
+    record_type=$(echo "$result" | awk '{print $1}')
+    destination=$(echo "$result" | awk '{print $2}')
+
+    echo "The subdomain $sub is a $record_type record and points to $destination"
 }
 
-# Main script logic
-if [ $# -eq 0 ]; then
-    echo "Usage: ./audit_subdomains.sh domain [subdomain]"
-    exit 1
+# Main logic
+if [ -z "$subdomain" ]; then
+    # Display info for default subdomains
+    get_subdomain_info "www"
+    get_subdomain_info "lb-01"
+    get_subdomain_info "web-01"
+    get_subdomain_info "web-02"
+else
+    # Display info for specified subdomain
+    get_subdomain_info "$subdomain"
 fi
-
-domain=$1
-subdomain=$2
-
-audit_subdomain $domain $subdomain
-
