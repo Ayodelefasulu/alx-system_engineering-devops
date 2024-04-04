@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# This script configures my domain zone so that the subdomian "www" points to my load balancer
+# Function to audit a subdomain
+audit_subdomain() {
+    domain=$1
+    subdomain=$2
+
+    if [ -z "$subdomain" ]; then
+        subdomains=("www" "lb-01" "web-01" "web-02")
+    else
+        subdomains=("$subdomain")
+    fi
+
+    for sub in "${subdomains[@]}"; do
+        record=$(dig +short $sub.$domain)
+        record_type=$(dig +short $sub.$domain | awk '{print $4}')
+
+        echo "The subdomain $sub is a $record_type record and points to $record"
+    done
+}
+
+# Main script logic
+if [ $# -eq 0 ]; then
+    echo "Usage: ./audit_subdomains.sh domain [subdomain]"
+    exit 1
+fi
+
+domain=$1
+subdomain=$2
+
+audit_subdomain $domain $subdomain
+
