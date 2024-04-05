@@ -1,24 +1,9 @@
-global
-    log /dev/log local0
-    log /dev/log local1 notice
-    chroot /var/lib/haproxy
-    user haproxy
-    group haproxy
-    daemon
+frontend https_front
+    bind *:443 ssl crt /etc/letsencrypt/live/www.holberton.online/fullchain.pem
 
-defaults
-    log global
-    mode http
-    option httplog
-    option dontlognull
-    timeout connect 5000ms
-    timeout client 50000ms
-    timeout server 50000ms
+    default_backend http_back
 
-frontend https-in
-    bind *:443 ssl crt /etc/letsencrypt/live/www.yourdomain.com/fullchain.pem
-    reqadd X-Forwarded-Proto:\ https
-    default_backend webservers
+backend http_back
+    server web-01 107.22.142.174:80 check
+    server web-02 3.85.1.94:80 check
 
-backend webservers
-    server server1 127.0.0.1:80 check
