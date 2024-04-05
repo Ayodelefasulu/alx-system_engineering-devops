@@ -1,51 +1,33 @@
 #!/usr/bin/env bash
-# To install nginx server
-# Update package lists
-sudo apt update
 
-# Install Nginx
-sudo apt install -y nginx
+# Install nginx package with -y option to automatically answer yes to pro>apt-get update
+apt-get install -y nginx
 
-# Create a simple webpage with "Hello World!" content
-echo "Hello World!" > /var/www/html/index.html
-
-# Set permissions on the webpage
-chmod 644 /var/www/html/index.html
-
-# Disable the default Nginx configuration
-mv /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default
-
-# Create a new server block configuration
-cat << EOF > /etc/nginx/sites-available/web-01.conf
+# Define the Nginx configuration
+echo '
 server {
-  listen 80;
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-  # Access log for debugging
-  access_log /var/log/nginx/access.log;
-
-  # Error log
-  error_log /var/log/nginx/error.log;
-
-  # Serve static content from /var/www/html
-  location / {
     root /var/www/html;
-    index index.html index.htm;
-  }
-}
-EOF
+    index index.html;
 
-# Activate the new server block configuration
-ln -s /etc/nginx/sites-available/web-01.conf /etc/nginx/sites-enabled/web-01.conf
+    server_name _;
 
-# Reload Nginx configuration (without systemctl)
-killall -s HUP nginx
+    location / {
+        echo "Hello World!";
+    }
+}' > /etc/nginx/sites-available/default
 
-# Test Nginx with curl
-curl -s localhost
+# Restart Nginx without using systemctl
+kill -s HUP $(pgrep nginx)
 
-# Check the response code (should be 200)
-if [ $? -eq 0 ]; then
-  echo "Success! Nginx is running and serving content."
+# Check if Nginx is running
+if pgrep nginx > /dev/null; then
+    echo "Nginx is running."
 else
-  echo "Error! Nginx is not serving content as expected."
+    echo "Nginx failed to start."
 fi
+
+# Check if Nginx serves a page with "Hello World!" content
+curl -s localhost | grep "Hello World!"
