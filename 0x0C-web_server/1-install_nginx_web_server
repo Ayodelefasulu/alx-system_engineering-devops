@@ -1,27 +1,51 @@
 #!/usr/bin/env bash
 # To install nginx server
+# Update package lists
+sudo apt update
+
 # Install Nginx
-apt-get update
-apt-get install -y nginx
+sudo apt install -y nginx
 
-# Configure Nginx to listen on port 80 and return "Hello World!"
-echo '
+# Create a simple webpage with "Hello World!" content
+echo "Hello World!" > /var/www/html/index.html
+
+# Set permissions on the webpage
+chmod 644 /var/www/html/index.html
+
+# Disable the default Nginx configuration
+mv /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default
+
+# Create a new server block configuration
+cat << EOF > /etc/nginx/sites-available/web-01.conf
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+  listen 80;
 
+  # Access log for debugging
+  access_log /var/log/nginx/access.log;
+
+  # Error log
+  error_log /var/log/nginx/error.log;
+
+  # Serve static content from /var/www/html
+  location / {
     root /var/www/html;
-    index index.html;
+    index index.html index.htm;
+  }
+}
+EOF
 
-    server_name _;
+# Activate the new server block configuration
+ln -s /etc/nginx/sites-available/web-01.conf /etc/nginx/sites-enabled/web-01.conf
 
-    location / {
-        echo "Hello World!";
-    }
-}' > /etc/nginx/sites-available/default
+# Reload Nginx configuration (without systemctl)
+killall -s HUP nginx
 
-# Restart Nginx without using systemctl
-kill -s HUP $(pidof nginx)
+# Test Nginx with curl
+curl -s localhost
 
-# Output success message
-echo "Nginx installed and configured successfully."
+# Check the response code (should be 200)
+if [ $? -eq 0 ]; then
+  echo "Success! Nginx is running and serving content."
+else
+  echo "Error! Nginx is not serving content as expected."
+fi
