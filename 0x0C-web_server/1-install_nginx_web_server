@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# Install Nginx on remote server and listen on port 80
 # Install nginx package with -y option to automatically answer yes to pro>apt-get update
 apt-get install -y nginx
 
