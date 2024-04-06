@@ -21,7 +21,7 @@ server {
 }' > /etc/nginx/sites-available/default
 
 # Restart Nginx without using systemctl
-kill -s HUP $(pgrep nginx)
+sudo nginx -s reload
 
 # Check if Nginx is running
 if pgrep nginx > /dev/null; then
