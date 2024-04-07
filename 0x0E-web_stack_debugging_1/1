@@ -1,0 +1,21 @@
+Hit:1 http://security.ubuntu.com/ubuntu focal-security InRelease
+Hit:2 http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu focal InRelease
+Hit:3 http://archive.ubuntu.com/ubuntu focal InRelease
+Hit:4 https://deb.nodesource.com/node_14.x focal InRelease
+Hit:5 http://apt.puppet.com focal InRelease
+Hit:6 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Hit:7 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+netcat is already the newest version (1.206-1ubuntu1).
+The following packages were automatically installed and are no longer required:
+  debconf-utils facter hiera libboost-filesystem1.71.0 libboost-locale1.71.0
+  libboost-log1.71.0 libboost-program-options1.71.0 libboost-regex1.71.0
+  libboost-thread1.71.0 libcpp-hocon0.1.7 libfacter3.11.0 libgmp-dev
+  libgmpxx4ldbl libleatherman1.4.2 libyaml-cpp0.6 ruby-deep-merge ruby-selinux
+  ruby-sync ruby2.7-dev ruby2.7-doc
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 252 not upgraded.
+Nginx is already listening on port 80

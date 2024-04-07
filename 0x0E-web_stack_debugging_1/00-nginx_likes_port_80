@@ -18,3 +18,4 @@ else
 
     echo "Nginx configured to listen on port 80"
 fi
+
