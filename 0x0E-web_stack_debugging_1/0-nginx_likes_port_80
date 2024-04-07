@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# This script checks if Nginx is running and restarts it if necessary
+
+# Install Nginx if it's not already installed
+if ! command -v nginx &> /dev/null; then
+    echo "Installing Nginx..."
+    apt-get update
+    apt-get install -y nginx
+fi
+
+# Check if Nginx is running
+nginx_pid=$(pidof nginx)
+
+if [[ -z "$nginx_pid" ]]; then
+    # Nginx is not running, start it
+    echo "Nginx is not running. Starting Nginx..."
+    nginx
+else
+    echo "Nginx is already running."
+fi
+
+# Check Nginx configuration
+nginx -t > /dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+    echo "Nginx configuration has errors. Please fix the configuration."
+    exit 1
+else
+    echo "Nginx configuration is valid."
+fi
+
+# Restart Nginx
+nginx -s reload
+echo "Nginx restarted successfully."
+
