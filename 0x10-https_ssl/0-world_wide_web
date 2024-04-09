@@ -6,9 +6,6 @@ get_subdomain_info() {
     local domain="$1"
     local sub="$2"
 
-    # Perform DNS lookup
-    result=$(dig +short "$sub.$domain" | awk '{print $1}')
-
     # Extract record type and destination
     record_type="A"  # Assuming A record type for simplicity
     destination=$(dig +short "$sub.$domain")
