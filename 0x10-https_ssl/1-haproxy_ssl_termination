@@ -33,12 +33,14 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
-frontend www.aystudios.tech
+frontend www_frontend
     bind *:80
     bind *:443 ssl crt /etc/ssl/certs/www.aystudios.tech.pem
+    mode http
     default_backend web_servers
 
-backend www-backend
+backend web_servers
+    mode http
     balance  roundrobin
     redirect scheme https if !{ ssl_fc }
     server web-01 107.22.142.174:80 check
