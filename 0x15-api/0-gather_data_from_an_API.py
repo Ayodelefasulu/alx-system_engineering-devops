@@ -8,6 +8,7 @@ from a REST API and displays it in a specific format.
 import requests
 import sys
 
+
 def fetch_todo_list_progress(employee_id):
     """
     Fetches and displays the TODO list progress of a specific employee.
@@ -15,8 +16,9 @@ def fetch_todo_list_progress(employee_id):
     Args:
         employee_id (int): The ID of the employee.
     """
-    base_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    todos_url = f'{base_url}/todos'
+    base_url = 'https://jsonplaceholder.typicode.com/users/{}'\
+        .format(employee_id)
+    todos_url = '{}/todos'.format(base_url)
     user_response = requests.get(base_url)
     todos_response = requests.get(todos_url)
 
@@ -29,12 +31,16 @@ def fetch_todo_list_progress(employee_id):
 
     employee_name = user_data.get('name')
     total_tasks = len(todos_data)
-    completed_tasks = len([task for task in todos_data if task.get('completed')])
+    completed_tasks = \
+        len([task for task in todos_data if task.get('completed')])
 
-    print(f'Employee {employee_name} is done with tasks ({completed_tasks}/{total_tasks}):')
+    print('Employee {} is done with tasks ({}/{})'
+        .format(employee_name, completed_tasks, total_tasks))
+    print('Tasks completed:')
     for task in todos_data:
         if task.get('completed'):
-            print(f'\t{task.get("title")}')
+            print('\t{}'.format(task.get('title')))
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
