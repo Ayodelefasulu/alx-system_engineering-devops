@@ -1,31 +1,29 @@
+#!/usr/bin/python3
+"""This Reddit api request gets number of subscribers"""
+
 import requests
 
 def number_of_subscribers(subreddit):
     """
-    Returns the number of subscribers for a given subreddit.
-
-    Args:
-        subreddit (str): The name of the subreddit.
-
-    Returns:
-        int: The number of subscribers of the subreddit. Returns 0 for invalid subreddits.
+    Queries the Reddit API and returns the number of subscribers for a given subreddit.
+    If the subreddit is invalid, returns 0.
     """
-    if subreddit is None or not isinstance(subreddit, str):
-        return 0
-
-    url = f'https://www.reddit.com/r/{subreddit}/about.json'
-    headers = {'User-Agent': 'python-requests/2.22.0'}
+    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+    headers = {"User-Agent": "MyRedditBot"}  # Set a custom User-Agent to avoid Too Many Requests errors
 
     try:
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
-        data = response.json()
-        return data.get("data", {}).get("subscribers", 0)
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
-        return 0
+        response_content = response.content.decode("utf-8")
 
-if __name__ == '__main__':
-    subreddit_name = input("Enter the subreddit name: ")
-    subscribers = number_of_subscribers(subreddit_name)
-    print(f"Subscribers: {subscribers}")
+        if response.status_code == requests.codes.ok:
+            # Check if the response is "success" or valid JSON
+            if response_content.strip() == "success":
+                return 0
+            else:
+                data = json.loads(response_content)
+                return data["data"]["subscribers"]
+        else:
+            # Handle other status codes (e.g., 404 for invalid subreddit)
+            return 0
+    except (requests.RequestException, json.JSONDecodeError):
+        return 0

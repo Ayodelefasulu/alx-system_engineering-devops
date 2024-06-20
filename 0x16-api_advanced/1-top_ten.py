@@ -1,38 +1,29 @@
 #!/usr/bin/python3
 """
-Contains the top_ten function
+This module contains the top_ten function.
 """
 
 import requests
 
+
 def top_ten(subreddit):
-    """Prints the titles of the first 10 hot posts for a given subreddit"""
-    if subreddit is None or not isinstance(subreddit, str):
-        print("None")
-        return
-    
-    url = f'https://www.reddit.com/r/{subreddit}/hot.json?limit=10'
-    headers = {'User-Agent': 'python-requests/2.22.0'}
-    
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
-        data = response.json()
-        posts = data.get("data", {}).get("children", [])
+    """
+    Queries the Reddit API and prints the titles of the first 10 hot posts
+    listed for a given subreddit.
 
-        if not posts:
-            print("No posts found.")
-        else:
-            for post in posts:
-                title = post.get("data", {}).get("title", "")
-                print(title)
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+    Args:
+        subreddit (str): The name of the subreddit.
 
-if __name__ == '__main__':
-    import sys
-    
-    if len(sys.argv) < 2:
-        print("Please pass an argument for the subreddit to search.")
+    Returns:
+        None
+    """
+    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    headers = {"User-Agent": "MyRedditApp/0.1 by u/Ayodele-Fasulu"}
+    response = requests.get(url, headers=headers, allow_redirects=False)
+
+    if response.status_code == 200:
+        data = response.json().get("data", {}).get("children", [])
+        for post in data:
+            print(post.get("data", {}).get("title"))
     else:
-        top_ten(sys.argv[1])
+        print(None)
