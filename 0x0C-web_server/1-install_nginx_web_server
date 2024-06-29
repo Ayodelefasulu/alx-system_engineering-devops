@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# To install nginx and configure default homepage for nginx
 # Ensure the script is executed as root
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
@@ -23,7 +23,7 @@ server {
 
     location / {
         default_type text/plain;
-        return 200 'Hello World!';
+        return 200 'Hello World!\n';
     }
 }
 EOF

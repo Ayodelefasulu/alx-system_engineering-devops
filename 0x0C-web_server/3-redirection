@@ -1,33 +1,39 @@
 #!/usr/bin/env bash
-
-# Locate the block section for the redirect rule
-location_block=$(grep -n '^\s*location \/ {' /etc/nginx/sites-available/web-01.conf | cut -d: -f1)
-
-# Check if the location block was found
-if [[ -z "$location_block" ]]; then
-  echo "Error: Could not find the location block in /etc/nginx/sites-available/web-01.conf"
-  exit 1
+# Configures nginx and set up redirection page
+# Ensure the script is executed as root
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
 fi
 
-# Insert the redirect rule within the existing location block
-sed -i "${location_block}i\\
-\
-    # Redirect /redirect_me to https://www.youtube.com/watch?v=QH2-TGUlwu4 with 301 status\
-    rewrite ^/redirect_me/(.*)$ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/web-01.conf
+# Update package lists and install nginx
+apt-get update
+apt-get install -y nginx
 
-# Reload Nginx configuration (without systemctl)
-killall -s HUP nginx
+# Configure nginx to listen on port 80, serve "Hello World!" at the root, and redirect /redirect_me
+cat << 'EOF' > /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-# Test the redirection
-curl -sI localhost/redirect_me/
+    root /var/www/html;
+    index index.html;
 
-# Check the response code (should be 301)
-if [ $? -eq 0 ]; then
-  echo "Redirection successful! Nginx is now redirecting /redirect_me to the specified URL."
-else
-  echo "Error! Redirection is not working as expected."
+    server_name _;
 
-  # Check Nginx configuration for the redirect rule
-  grep 'rewrite ^/redirect_me/' /etc/nginx/sites-available/web-01.conf
-  echo "**Please review the inserted redirect rule above (if present)**"
-fi
+    location / {
+        default_type text/plain;
+        return 200 'Hello World!';
+    }
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+}
+EOF
+
+# Reload nginx to apply the new configuration
+nginx -s reload
+
+# Output success message
+echo "Nginx installed and configured successfully."
