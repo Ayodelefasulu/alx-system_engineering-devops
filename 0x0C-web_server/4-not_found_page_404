@@ -1,29 +1,52 @@
 #!/usr/bin/env bash
-
-# Create the custom 404 error page
-echo "Ceci n'est pas une page" > /var/www/html/404.html
-
-# Set permissions on the error page
-chmod 644 /var/www/html/404.html
-
-# Configure error_page directive in Nginx
-sed -i 's/error_page.*/error_page 404 \/404.html;/' /etc/nginx/sites-available/web-01.conf
-
-# Reload Nginx configuration (without systemctl)
-killall -s HUP nginx
-
-# Test the custom 404 page with an invalid URL
-curl localhost/non-existent-page
-
-# Check for "Ceci n'est pas une page" in the response
-if grep -q 'Ceci n\'est pas une page' output.txt; then
-  echo "Success! Custom 404 page is working. Response contains 'Ceci n'est pas une page'."
-  rm output.txt  # Clean up temporary file (optional)
-else
-  echo "Error! Custom 404 page content not found in response."
-  cat output.txt  # Display response for debugging (optional)
+# Configures the error page
+# Ensure the script is executed as root
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
 fi
 
-# Clean up temporary file (optional)
-rm output.txt
+# Update package lists and install nginx
+apt-get update
+apt-get install -y nginx
+
+# Create the custom 404 page
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+# Configure nginx to listen on port 80, serve "Hello World!" at the root, redirect /redirect_me, and serve the custom 404 page
+cat << 'EOF' > /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location / {
+        default_type text/plain;
+        return 200 'Hello World!';
+    }
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
+    }
+}
+EOF
+
+# Reload nginx to apply the new configuration
+nginx -s reload
+
+# Output success message
+echo "Nginx installed and configured successfully."
 
