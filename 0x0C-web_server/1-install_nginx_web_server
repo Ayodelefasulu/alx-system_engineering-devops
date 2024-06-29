@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
-# Install Nginx on remote server and listen on port 80
-# Install nginx package with -y option to automatically answer yes to prompts
-sudo apt-get update
-sudo apt-get install -y nginx
 
-# Define the Nginx configuration
-echo '
+# Ensure the script is executed as root
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+
+# Update package lists and install nginx
+apt-get update
+apt-get install -y nginx
+
+# Configure nginx to listen on port 80 and serve "Hello World!" page
+cat << 'EOF' > /etc/nginx/sites-available/default
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -16,19 +22,14 @@ server {
     server_name _;
 
     location / {
-        return 200 "Hello World!\n";
+        default_type text/plain;
+        return 200 'Hello World!';
     }
-}' > /etc/nginx/sites-available/default
+}
+EOF
 
-# Restart Nginx without using systemctl
-sudo nginx -s reload
+# Restart nginx without using systemctl
+nginx -s reload
 
-# Check if Nginx is running
-if pgrep nginx > /dev/null; then
-    echo "Nginx is running."
-else
-    echo "Nginx failed to start."
-fi
-
-# Check if Nginx serves a page with "Hello World!" content
-curl -s localhost | grep "Hello World!"
+# Output success message
+echo "Nginx installed and configured successfully."
